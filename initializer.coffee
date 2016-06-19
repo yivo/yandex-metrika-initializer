@@ -44,6 +44,7 @@ if (head = document.getElementsByTagName('head')[0])?
     if el.getAttribute('name') is 'yandex_metrika:counter_id'
       counterID   = el.getAttribute('content')
     else if el.getAttribute('name') is 'yandex_metrika:options'
-      try options = JSON.parse(el.getAttribute('content'))
+      json = el.getAttribute('content')
+      try options = JSON?.parse(json) or $.parseJSON(json)
 
   initialize(counterID, options) if counterID
