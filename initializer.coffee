@@ -12,11 +12,12 @@ initialize = do ->
     (window.yandex_metrika_callbacks ?= []).push ->
       try metrika = new Ya.Metrika($.extend(id: counterID, options, defer: yes))
 
-    script       = document.createElement('script')
-    script.type  = 'text/javascript'
-    script.async = true
-    script.src   = 'https://mc.yandex.ru/metrika/watch.js'
-    append       = -> document.getElementsByTagName('head')[0]?.appendChild(script); return
+    script             = document.createElement('script')
+    script.type        = 'text/javascript'
+    script.async       = true
+    script.src         = 'https://mc.yandex.ru/metrika/watch.js'
+    script.crossOrigin = 'anonymous'
+    append             = -> document.getElementsByTagName('head')[0]?.appendChild(script); return
 
     if window.opera is '[object Opera]'
       document.addEventListener('DOMContentLoaded', append, false)
