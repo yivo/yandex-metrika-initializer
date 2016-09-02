@@ -16,7 +16,7 @@ initialize = do ->
     script.type        = 'text/javascript'
     script.async       = true
     script.src         = 'https://mc.yandex.ru/metrika/watch.js'
-    script.crossOrigin = ''
+    script.crossOrigin = undefined if script.crossOrigin?
     append             = -> document.getElementsByTagName('head')[0]?.appendChild(script); return
 
     if window.opera is '[object Opera]'
