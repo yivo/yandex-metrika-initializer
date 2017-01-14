@@ -1,0 +1,27 @@
+{
+  "name": "yandex-metrika-initializer",
+  "version": "1.0.4",
+  "description": "This snippet of code automatically initializes yandex metrika with config retrieved from meta tags. Friendly with Turbolinks and pjax.",
+  "main": "initializer.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yivo/yandex-metrika-initializer.git"
+  },
+  "keywords": [
+    "yandex",
+    "metrika",
+    "watch.js"
+  ],
+  "author": "Yaroslav Konoplov <eahome00@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yivo/yandex-metrika-initializer/issues"
+  },
+  "homepage": "https://github.com/yivo/yandex-metrika-initializer#readme",
+  "dependencies": {
+    "coffee-script": "^1.12.2"
+  }
+}
