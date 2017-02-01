@@ -10,28 +10,27 @@ initialize = do ->
       unless counterID
         throw new TypeError('[Yandex Metrika Initializer] Counter ID is required')
 
-      metrika = null
-      (window.yandex_metrika_callbacks ?= []).push ->
-        try metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true)); return
-  
-      script             = document.createElement('script')
-      script.type        = 'text/javascript'
-      script.async       = true
-      script.src         = 'https://mc.yandex.ru/metrika/watch.js'
-      append             = -> document.getElementsByTagName('head')[0]?.appendChild(script); return
-      hit                = -> metrika?.hit?(location.href.split('#')[0], title: document.title); return
+      metrika      = null
+      script       = document.createElement('script')
+      script.type  = 'text/javascript'
+      script.async = true
+      script.src   = 'https://mc.yandex.ru/metrika/watch.js'
+      append       = -> document.getElementsByTagName('head')[0]?.appendChild(script)
+      init         = -> metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true))
+      hit          = -> metrika.hit(location.href.split('#')[0], title: document.title)
+      
+      window.yandex_metrika_callbacks = [init, hit]
+
+      if Turbolinks?.supported
+        $(document).one 'page:change', -> $(document).on('page:change', hit)
+      else
+        $(document).on('pjax:end', hit) if $.support.pjax
 
       if window.opera is '[object Opera]'
         document.addEventListener('DOMContentLoaded', append, false)
       else
         append()
-  
-      if Turbolinks?.supported
-        $(document).on('page:change', hit)
-      else
-        hit()
-        $(document).on('pjax:end', hit) if $.support.pjax
-
+        
       initialized = true
     return
 
