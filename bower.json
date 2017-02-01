@@ -1,7 +1,7 @@
 {
   "name": "yandex-metrika-initializer",
   "description": "This snippet of code automatically initializes yandex metrika with config retrieved from meta tags. Friendly with Turbolinks and pjax.",
-  "main": "initializer.coffee",
+  "main": "build/yandex-metrika-initializer.js",
   "authors": [
     "Yaroslav Konoplov <eahome00@gmail.com>"
   ],

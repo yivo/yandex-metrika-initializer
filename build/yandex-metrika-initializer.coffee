@@ -1,7 +1,7 @@
 ###!
-# yandex-metrika-initializer 1.0.4 | https://github.com/yivo/yandex-metrika-initializer | MIT License
+# yandex-metrika-initializer 1.0.5 | https://github.com/yivo/yandex-metrika-initializer | MIT License
 ###
-  
+
 initialize = do ->
   initialized = false
 
@@ -18,7 +18,7 @@ initialize = do ->
       append       = -> document.getElementsByTagName('head')[0]?.appendChild(script)
       init         = -> metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true))
       hit          = -> metrika.hit(location.href.split('#')[0], title: document.title)
-      
+
       window.yandex_metrika_callbacks = [init, hit]
 
       if Turbolinks?.supported
@@ -30,7 +30,7 @@ initialize = do ->
         document.addEventListener('DOMContentLoaded', append, false)
       else
         append()
-        
+
       initialized = true
     return
 

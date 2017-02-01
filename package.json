@@ -1,8 +1,8 @@
 {
   "name": "yandex-metrika-initializer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "This snippet of code automatically initializes yandex metrika with config retrieved from meta tags. Friendly with Turbolinks and pjax.",
-  "main": "initializer.coffee",
+  "main": "build/yandex-metrika-initializer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,5 +23,10 @@
   "homepage": "https://github.com/yivo/yandex-metrika-initializer#readme",
   "dependencies": {
     "coffee-script": "^1.12.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.3",
+    "gulp-concat": "^2.6.1"
   }
 }
