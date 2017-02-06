@@ -1,60 +1,62 @@
 
 /*!
- * yandex-metrika-initializer 1.0.5 | https://github.com/yivo/yandex-metrika-initializer | MIT License
+ * yandex-metrika-initializer 1.0.6 | https://github.com/yivo/yandex-metrika-initializer | MIT License
  */
 
 (function() {
   var counterID, el, head, i, initialize, json, len, options, ref, ref1;
 
-  initialize = (function() {
-    var initialized;
-    initialized = false;
-    return function(counterID, options) {
-      var append, hit, init, metrika, script;
-      if (!initialized) {
-        if (!counterID) {
-          throw new TypeError('[Yandex Metrika Initializer] Counter ID is required');
-        }
-        metrika = null;
-        script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = true;
-        script.src = 'https://mc.yandex.ru/metrika/watch.js';
-        append = function() {
-          var ref;
-          return (ref = document.getElementsByTagName('head')[0]) != null ? ref.appendChild(script) : void 0;
-        };
-        init = function() {
-          return metrika = new Ya.Metrika($.extend({
-            id: counterID
-          }, options, {
-            defer: true
-          }));
-        };
-        hit = function() {
-          return metrika.hit(location.href.split('#')[0], {
-            title: document.title
-          });
-        };
-        window.yandex_metrika_callbacks = [init, hit];
-        if (typeof Turbolinks !== "undefined" && Turbolinks !== null ? Turbolinks.supported : void 0) {
-          $(document).one('page:change', function() {
-            return $(document).on('page:change', hit);
-          });
-        } else {
-          if ($.support.pjax) {
-            $(document).on('pjax:end', hit);
-          }
-        }
-        if (window.opera === '[object Opera]') {
-          document.addEventListener('DOMContentLoaded', append, false);
-        } else {
-          append();
-        }
-        initialized = true;
-      }
+  initialize = function(counterID, options) {
+    var $document, append, hit, hitoptions, hiturl, init, metrika, script;
+    if (!counterID) {
+      throw new TypeError('[Yandex Metrika Initializer] Counter ID is required');
+    }
+    script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://mc.yandex.ru/metrika/watch.js';
+    metrika = null;
+    append = function() {
+      return document.getElementsByTagName('head')[0].appendChild(script);
     };
-  })();
+    init = function() {
+      return metrika = new Ya.Metrika($.extend({
+        id: counterID
+      }, options, {
+        defer: true
+      }));
+    };
+    hit = function() {
+      return metrika.hit(hiturl(), hitoptions());
+    };
+    hiturl = function() {
+      return location.href.split('#')[0];
+    };
+    hitoptions = function() {
+      return {
+        title: document.title,
+        referrer: document.referrer
+      };
+    };
+    window.yandex_metrika_callbacks = [init, hit];
+    if (typeof Turbolinks !== "undefined" && Turbolinks !== null ? Turbolinks.supported : void 0) {
+      $document = $(document);
+      hitoptions = function() {
+        return {
+          title: document.title,
+          referrer: Turbolinks.referrer
+        };
+      };
+      $document.one('page:change', function() {
+        return $document.on('page:change', hit);
+      });
+    }
+    if (window.opera === '[object Opera]') {
+      return document.addEventListener('DOMContentLoaded', append, false);
+    } else {
+      return append();
+    }
+  };
 
   if ((head = document.getElementsByTagName('head')[0]) != null) {
     ref = head.getElementsByTagName('meta');

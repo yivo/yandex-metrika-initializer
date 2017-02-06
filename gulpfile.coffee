@@ -1,5 +1,4 @@
 gulp   = require('gulp')
-concat = require('gulp-concat')
 coffee = require('gulp-coffee')
 
 gulp.task 'default', ['build', 'watch'], ->

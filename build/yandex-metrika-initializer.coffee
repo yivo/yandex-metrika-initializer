@@ -1,38 +1,34 @@
 ###!
-# yandex-metrika-initializer 1.0.5 | https://github.com/yivo/yandex-metrika-initializer | MIT License
+# yandex-metrika-initializer 1.0.6 | https://github.com/yivo/yandex-metrika-initializer | MIT License
 ###
 
-initialize = do ->
-  initialized = false
+initialize = (counterID, options) ->
+  unless counterID
+    throw new TypeError('[Yandex Metrika Initializer] Counter ID is required')
 
-  (counterID, options) ->
-    unless initialized
-      unless counterID
-        throw new TypeError('[Yandex Metrika Initializer] Counter ID is required')
+  script       = document.createElement('script')
+  script.type  = 'text/javascript'
+  script.async = true
+  script.src   = 'https://mc.yandex.ru/metrika/watch.js'
+  metrika      = null
+  append       = -> document.getElementsByTagName('head')[0].appendChild(script)
+  # https://yandex.ru/support/metrika/code/ajax-flash.xml
+  init         = -> metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true))
+  hit          = -> metrika.hit(hiturl(), hitoptions())
+  hiturl       = -> location.href.split('#')[0]
+  hitoptions   = -> title: document.title, referrer: document.referrer
+  
+  window.yandex_metrika_callbacks = [init, hit]
 
-      metrika      = null
-      script       = document.createElement('script')
-      script.type  = 'text/javascript'
-      script.async = true
-      script.src   = 'https://mc.yandex.ru/metrika/watch.js'
-      append       = -> document.getElementsByTagName('head')[0]?.appendChild(script)
-      init         = -> metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true))
-      hit          = -> metrika.hit(location.href.split('#')[0], title: document.title)
+  if Turbolinks?.supported
+    $document  = $(document)
+    hitoptions = -> title: document.title, referrer: Turbolinks.referrer
+    $document.one 'page:change', -> $document.on('page:change', hit)
 
-      window.yandex_metrika_callbacks = [init, hit]
-
-      if Turbolinks?.supported
-        $(document).one 'page:change', -> $(document).on('page:change', hit)
-      else
-        $(document).on('pjax:end', hit) if $.support.pjax
-
-      if window.opera is '[object Opera]'
-        document.addEventListener('DOMContentLoaded', append, false)
-      else
-        append()
-
-      initialized = true
-    return
+  if window.opera is '[object Opera]'
+    document.addEventListener('DOMContentLoaded', append, false)
+  else
+    append()
 
 if (head = document.getElementsByTagName('head')[0])?
   for el in head.getElementsByTagName('meta')
