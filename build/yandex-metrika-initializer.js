@@ -1,13 +1,13 @@
 
 /*!
- * yandex-metrika-initializer 1.0.6 | https://github.com/yivo/yandex-metrika-initializer | MIT License
+ * yandex-metrika-initializer 1.0.7 | https://github.com/yivo/yandex-metrika-initializer | MIT License
  */
 
 (function() {
   var counterID, el, head, i, initialize, json, len, options, ref, ref1;
 
   initialize = function(counterID, options) {
-    var $document, append, hit, hitoptions, hiturl, init, metrika, script;
+    var $document, append, hit, hitoptions, hiturl, hitwith, init, metrika, script;
     if (!counterID) {
       throw new TypeError('[Yandex Metrika Initializer] Counter ID is required');
     }
@@ -29,6 +29,11 @@
     hit = function() {
       return metrika.hit(hiturl(), hitoptions());
     };
+    hitwith = function(url, options) {
+      return function() {
+        return metrika.hit(url, options);
+      };
+    };
     hiturl = function() {
       return location.href.split('#')[0];
     };
@@ -38,7 +43,7 @@
         referrer: document.referrer
       };
     };
-    window.yandex_metrika_callbacks = [init, hit];
+    window.yandex_metrika_callbacks = [init, hitwith(hiturl(), hitoptions())];
     if (typeof Turbolinks !== "undefined" && Turbolinks !== null ? Turbolinks.supported : void 0) {
       $document = $(document);
       hitoptions = function() {
@@ -48,7 +53,13 @@
         };
       };
       $document.one('page:change', function() {
-        return $document.on('page:change', hit);
+        return $document.on('page:change', function() {
+          if (metrika != null) {
+            return hit();
+          } else {
+            return window.yandex_metrika_callbacks.push(hitwith(hiturl(), hitoptions()));
+          }
+        });
       });
     }
     if (window.opera === '[object Opera]') {

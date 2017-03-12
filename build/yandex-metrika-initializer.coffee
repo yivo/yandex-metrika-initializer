@@ -1,5 +1,5 @@
 ###!
-# yandex-metrika-initializer 1.0.6 | https://github.com/yivo/yandex-metrika-initializer | MIT License
+# yandex-metrika-initializer 1.0.7 | https://github.com/yivo/yandex-metrika-initializer | MIT License
 ###
 
 initialize = (counterID, options) ->
@@ -15,15 +15,26 @@ initialize = (counterID, options) ->
   # https://yandex.ru/support/metrika/code/ajax-flash.xml
   init         = -> metrika = new Ya.Metrika($.extend(id: counterID, options, defer: true))
   hit          = -> metrika.hit(hiturl(), hitoptions())
+  hitwith      = (url, options) -> -> metrika.hit(url, options)
   hiturl       = -> location.href.split('#')[0]
   hitoptions   = -> title: document.title, referrer: document.referrer
-  
-  window.yandex_metrika_callbacks = [init, hit]
+
+  #                                  Init metrika when JS will load.
+  #                                  |     Enqueue hit with fixed url and options.
+  #                                  |     |
+  window.yandex_metrika_callbacks = [init, hitwith(hiturl(), hitoptions())]
 
   if Turbolinks?.supported
     $document  = $(document)
     hitoptions = -> title: document.title, referrer: Turbolinks.referrer
-    $document.one 'page:change', -> $document.on('page:change', hit)
+    $document.one 'page:change', ->
+      $document.on 'page:change', ->
+        if metrika?
+          hit()
+        # If user navigated to next page but metrika has not been loaded yet.
+        else
+          # Enqueue hit with fixed url and options.
+          window.yandex_metrika_callbacks.push hitwith(hiturl(), hitoptions())
 
   if window.opera is '[object Opera]'
     document.addEventListener('DOMContentLoaded', append, false)
